@@ -3,9 +3,9 @@ bits 64
 
 segment .data
     LC0:
-        db "%d", 0xd, 0xa, 0 ;format for printing int
-    first equ 12
-    second equ 14
+        db "brah %d", 0xd, 0xa, 0 ;format for printing int
+    LC1:
+        dq 6
 
 segment .text
 
@@ -23,10 +23,8 @@ printint:
     
     lea     rcx, [LC0] ;load memory address of string format to rcx register
     
-    mov     r9, first
-    mov     r8, 3
-    idiv    r9
-    
+    mov rdx, rdi
+
     call    printf
 
     mov rsp, rbp
@@ -40,6 +38,25 @@ main:
     sub     rsp, 32 ; allocates 32 bytes on stack
 
     call    _CRT_INIT
+
+    ;mov     rax, 36
+    ;mov     r9, 6
+    ;cqo ; extends to 8 bytes
+    ;crashes if u remove cqo
+    ;idiv    r9 ;rax is affected by idiv
+	mov		r8, 2
+	mov		r9, 3
+	mov		r10, 5
+	imul		r10, r9
+	add		r10, r8
+	mov		r8, 8
+	mov		r9, 3
+	mov		rax, r8
+	cqo
+	idiv	r9
+	mov		r8,rax
+	sub		r10, r8
+	mov		rdi, r10
 
     call    printint
 

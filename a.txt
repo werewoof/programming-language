@@ -1,1 +1,5 @@
-2 + 3 * 5 - 8 / 3
+int fred;
+int jim;
+fred = 5 + 12;
+jim = 12 + fred;
+print fred + jim;

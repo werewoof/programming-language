@@ -1,0 +1,1 @@
+gcc -o comp1 -g cg.c decl.c expr.c gen.c main.c misc.c scan.c stmt.c sym.c tree.c

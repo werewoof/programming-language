@@ -42,74 +42,87 @@ void cgpreamble()
   "extern printf\n"
   "segment . data\n"
   "\tLC0: db \"%d\", 0xd, 0xa, 0\n"
-  "\tfirst equ 12\n"
-  "\tsecond equ 14\n"
   "segment .text\n"
   "printint:\n"
   "\tpush\trbp\n"
-  "\tmov\trbp, rsp\n"
-  "\tsub\trsp, 32\n"
-  "\tlea\trcx, [LC0]\n"
-  "\tmov\trdx, r9\n"
+  "\tmov\t\trbp, rsp\n"
+  "\tsub\t\trsp, 32\n"
+  "\tlea\t\trcx, [LC0]\n"
+  "\tmov\t\trdx, rdi\n"
   "\tcall\tprintf\n"
-  "\tmov\trsp, rbp\n"
-  "\tpop\trbp\n"
+  "\tmov\t\trsp, rbp\n"
+  "\tpop\t\trbp\n"
   "\tret\n"
   "main:\n"
   "\tpush\trbp\n"
-  "\tmov\trbp, rsp\n"
-  "\tsub\trsp, 32\n"
-  "\tcall _CRT_INIT\n",
+  "\tmov\t\trbp, rsp\n"
+  "\tsub\t\trsp, 32\n"
+  "\tcall\t_CRT_INIT\n",
   Outfile);
 }
 
 void cgpostamble()
 {
   fputs(
-  "\tmov\trsp, rbp\n"
-	"\tpop\trbp\n"
-	"\txor\trcx, rcx\n"
+  "\tmov\t\trsp, rbp\n"
+	"\tpop\t\trbp\n"
+	"\txor\t\trcx, rcx\n"
 	"\tcall\tExitProcess\n",
   Outfile);
 }
 
-int cgload(int value) {
+int cgloadint(int value) {
 
     int r = alloc_register();
 
-    fprintf(Outfile, "\tmov\t$%s, %d\n", reglist[r], value);
+    fprintf(Outfile, "\tmov\t\t%s, %d\n", reglist[r], value);
     return r;
 }
 
 int cgadd(int r1, int r2) {
-    fprintf(Outfile, "\tadd\t%s, %s\n", reglist[r2], reglist[r1]);
+    fprintf(Outfile, "\tadd\t\t%s, %s\n", reglist[r2], reglist[r1]);
     free_register(r1);
     return r2;
 }
 
 int cgmul(int r1, int r2) {
-    fprintf(Outfile, "\timul\t%s, %s\n", reglist[r2], reglist[r1]);
+    fprintf(Outfile, "\timul\t\t%s, %s\n", reglist[r2], reglist[r1]);
     free_register(r1);
     return r2;
 }
 
 int cgsub(int r1, int r2) {
-    fprintf(Outfile, "\tsub\t%s, %s\n", reglist[r2], reglist[r1]);
+    fprintf(Outfile, "\tsub\t\t%s, %s\n", reglist[r1], reglist[r2]);
     free_register(r2);
     return r1;
 }
 
 int cgdiv(int r1, int r2) {
-    fprintf(Outfile, "\tmovq\t%s, %%rax\n", reglist[r1]);
+    fprintf(Outfile, "\tmov\t\trax, %s\n", reglist[r1]);
     fprintf(Outfile, "\tcqo\n");
-    fprintf(Outfile, "\tidivq\t%s\n", reglist[r2]);
-    fprintf(Outfile, "\tmovq\t%%rax,%s\n", reglist[r1]);
+    fprintf(Outfile, "\tidiv\t%s\n", reglist[r2]);
+    fprintf(Outfile, "\tmov\t\t%s,rax\n", reglist[r1]);
     free_register(r2);
     return r1;
 }
 
 void cgprintint(int r) {
-    fprintf(Outfile, "\tmovq\t%s, %%rdi\n", reglist[r]);
+    fprintf(Outfile, "\tmov\t\trdi, %s\n", reglist[r]);
     fprintf(Outfile, "\tcall\tprintint\n");
     free_register(r);
+}
+
+int cgloadglob(char *identifier) {
+  int r = alloc_register();
+  fprintf(Outfile, "\tmov\t%s, [%s]\n", reglist[r], identifier);
+  return r;
+}
+
+int cgstorglob(int r, char *identifier) {
+  fprintf(Outfile, "\tmov\t\tqword [%s], %s\n", identifier, reglist[r]);
+  return r;
+}
+
+void cgglobsym(char *sym) {
+  fprintf(Outfile, "\tcommon\t%s 8\n", sym);
 }

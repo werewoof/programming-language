@@ -1,39 +1,43 @@
-	.text
-.LC0:
-	.string	"%d\n"
+default rel
+bits 64
+global main
+global printint
+extern _CRT_INIT
+extern ExitProcess
+extern printf
+segment . data
+	LC0: db "%d", 0xd, 0xa, 0
+segment .text
 printint:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	subq	$16, %rsp
-	movl	%edi, -4(%rbp)
-	movl	-4(%rbp), %eax
-	movl	%eax, %esi
-	leaq	.LC0(%rip), %rdi
-	movl	$0, %eax
-	call	printf@PLT
-	nop
-	leave
+	push	rbp
+	mov	rbp, rsp
+	sub	rsp, 32
+	lea	rcx, [LC0]
+	mov	rdx, rdi
+	call	printf
+	mov	rsp, rbp
+	pop	rbp
 	ret
-
-	.globl	main
-	.type	main, @function
 main:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	movq	$2, %r8
-	movq	$3, %r9
-	movq	$5, %r10
-	imulq	%r9, %r10
-	addq	%r8, %r10
-	movq	$8, %r8
-	movq	$3, %r9
-	movq	%r8, %rax
-	cqo
-	idivq	%r9
-	movq	%rax,%r8
-	subq	%r8, %r10
-	movq	%r10, %rdi
+	push	rbp
+	mov	rbp, rsp
+	sub	rsp, 32
+	call _CRT_INIT
+	mov	$r8, 2
+	mov	$r9, 3
+	mov	$r10, 5
+	imul	r10, r9
+	add	r10, r8
+	mov	$r8, 8
+	mov	$r9, 3
+	mov	r8, r8
+	mov	r9, r9
+	idiv	r9
+	mov	rax,r8
+	sub	r8, r10
+	mov	rdi, rax
 	call	printint
-	movl	$0, %eax
-	popq	%rbp
-	ret
+	mov	rsp, rbp
+	pop	rbp
+	xor	rcx, rcx
+	call	ExitProcess

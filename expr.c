@@ -29,16 +29,26 @@ int arithop(int tok) { //create AST operation from tokens
 
 static struct ASTnode *primary(void) {
     struct ASTnode *n;
+    int id;
     
     switch (Token.token) {
         case T_INTLIT:
             n = mkastleaf(A_INTLIT, Token.intvalue);
             scan(&Token);
             return n;
+        case T_IDENT:
+            id = findglob(Text);
+            if (id == -1)
+                fatals("Unknown variable", Text);
+            n = mkastleaf(A_IDENT, id);
+            break;
         default:
-            fprintf(stderr, "syntax error on line %d\n", Line);
+            fatald("Syntax error, token", Token.token);
             exit(1);
     }
+
+    scan(&Token);
+    return n;
 }
 
 static int op_precedence(int tokentype) {
@@ -57,7 +67,7 @@ struct ASTnode *binexpr(int ptp) {
     left = primary();
 
     tokentype = Token.token;
-    if (Token.token == T_EOF)
+    if (tokentype == T_SEMI)
         return left;
     
     while (op_precedence(tokentype) > ptp) {
@@ -68,7 +78,7 @@ struct ASTnode *binexpr(int ptp) {
         left = mkastnode(arithop(tokentype), left, right, 0);
 
         tokentype = Token.token;
-        if (tokentype == T_EOF)
+        if (tokentype == T_SEMI)
             return left;
     }
 

@@ -41,15 +41,19 @@ void main(int argc, char *argv[]) {
         exit(1);
     }
     
-    if ((Outfile = fopen("out.s", "w")) == NULL) {
+    if ((Outfile = fopen("out.asm", "w")) == NULL) {
         fprintf(stderr, "Unable to create out.s: %s\n", strerror(errno));
         exit(1);
     }
 
     scan(&Token);
-    n = binexpr(0);
-    printf("%d\n", interpretAST(n));
-    generatecode(n);
+    //n = binexpr(0);
+    //printf("%d\n", interpretAST(n));
+    //generatecode(n);
+
+    genpreamble();
+    statements();
+    genpostamble();
 
     fclose(Outfile);
     //scanfile();
