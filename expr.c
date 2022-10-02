@@ -3,15 +3,22 @@
 #include "decl.h"
 
 static int OpPrec[] = {
-    0, //EOF
+    0, //SEMI
     10, //+
     10, //-
     20, //*
     20, // / (divide)
-    0 // INTLIT
+    30, //T_EQ
+    30, //T_NE
+    40, //T_LT
+    40, //T_GT
+    40, //T_LE
+    40, //T_LE
+  //  0 // INTLIT
 };
 
-int arithop(int tok) { //create AST operation from tokens
+int arithop(int tokentype) { //create AST operation from tokens
+/*
     switch (tok) {
         case T_PLUS:
             return A_ADD;
@@ -25,6 +32,11 @@ int arithop(int tok) { //create AST operation from tokens
             fprintf(stderr, "unknown token in arithop() on line %d", Line);
             exit(1);
     }
+*/
+   if (tokentype > T_EOF && tokentype < T_INTLIT) {
+    return tokentype;
+    }
+    fatald("Syntax error, token", tokentype);
 }
 
 static struct ASTnode *primary(void) {

@@ -23,20 +23,87 @@ main:
 	mov		rbp, rsp
 	sub		rsp, 32
 	call	_CRT_INIT
-	common	fred 8
-	common	jim 8
-	mov		r8, 5
-	mov		r9, 12
-	add		r9, r8
-	mov	qword [fred], r9
-	mov		r8, 12
-	mov	r9, [fred]
-	add		r9, r8
-	mov	qword [jim], r9
-	mov	r8, [fred]
-	mov	r9, [jim]
-	add		r9, r8
-	mov		rdi, r9
+	common	x 8
+	mov		r8, 7
+	mov		r9, 9
+	cmp		r8, r9
+	setl	r9b
+	and		r9, 255
+	mov		qword [x], r9
+	mov	r8, [x]
+	mov		rdi, r8
+	call	printint
+	mov		r8, 7
+	mov		r9, 9
+	cmp		r8, r9
+	setle	r9b
+	and		r9, 255
+	mov		qword [x], r9
+	mov	r8, [x]
+	mov		rdi, r8
+	call	printint
+	mov		r8, 7
+	mov		r9, 9
+	cmp		r8, r9
+	setne	r9b
+	and		r9, 255
+	mov		qword [x], r9
+	mov	r8, [x]
+	mov		rdi, r8
+	call	printint
+	mov		r8, 7
+	mov		r9, 7
+	cmp		r8, r9
+	sete	r9b
+	and		r9, 255
+	mov		qword [x], r9
+	mov	r8, [x]
+	mov		rdi, r8
+	call	printint
+	mov		r8, 7
+	mov		r9, 7
+	cmp		r8, r9
+	setge	r9b
+	and		r9, 255
+	mov		qword [x], r9
+	mov	r8, [x]
+	mov		rdi, r8
+	call	printint
+	mov		r8, 7
+	mov		r9, 7
+	cmp		r8, r9
+	setle	r9b
+	and		r9, 255
+	mov		qword [x], r9
+	mov	r8, [x]
+	mov		rdi, r8
+	call	printint
+	mov		r8, 6
+	mov		r9, 7
+	cmp		r8, r9
+	setg	r9b
+	and		r9, 255
+	mov		qword [x], r9
+	mov	r8, [x]
+	mov		rdi, r8
+	call	printint
+	mov		r8, 9
+	mov		r9, 7
+	cmp		r8, r9
+	setge	r9b
+	and		r9, 255
+	mov		qword [x], r9
+	mov	r8, [x]
+	mov		rdi, r8
+	call	printint
+	mov		r8, 9
+	mov		r9, 7
+	cmp		r8, r9
+	setne	r9b
+	and		r9, 255
+	mov		qword [x], r9
+	mov	r8, [x]
+	mov		rdi, r8
 	call	printint
 	mov		rsp, rbp
 	pop		rbp

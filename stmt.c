@@ -25,7 +25,7 @@ void assignment_statement(void) {
         fatals("Undeclared variable", Text);
     }
     right = mkastleaf(A_LVIDENT, id);
-    match(T_EQUALS, "=");
+    match(T_ASSIGN , "=");
     left = binexpr(0);
     tree = mkastnode(A_ASSIGN, left, right, 0);
     genAST(tree, -1);
@@ -34,8 +34,8 @@ void assignment_statement(void) {
 }
 
 void statements(void) {
-    struct ASTnode *tree;
-    int reg;
+    //struct ASTnode *tree;
+    //int reg;
     while (1) {
         switch (Token.token) {
         case T_PRINT:
